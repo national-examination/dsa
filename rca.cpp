@@ -1,3 +1,4 @@
+// Import all libraries
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -5,10 +6,13 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <iomanip> 
 using namespace std;
 
+// Include items.csv file where we will save our data
 string item = "items.csv";
 
+// Function to open the output file where we perform write and append operations
 ofstream openOutputFile(string filename,const string mode = "a"){
    ofstream file;
 
@@ -25,6 +29,7 @@ ofstream openOutputFile(string filename,const string mode = "a"){
    return file;
 }
 
+// Function to open the input file where we perform read operations
 ifstream openInputFile(string filename){
    ifstream file(filename);
 
@@ -35,6 +40,7 @@ ifstream openInputFile(string filename){
    return file;
 }
 
+// Function to separate our sentences by ,
 vector<string> separateSentence(const string& sentence) {
     vector<string> words;
     istringstream iss(sentence);
@@ -46,7 +52,7 @@ vector<string> separateSentence(const string& sentence) {
     return words;
 }
 
-
+// Function to read data from our file items
 void readFromFile(ifstream& file){
     vector<vector<string>> items;
 
@@ -57,18 +63,17 @@ void readFromFile(ifstream& file){
     }
 
     sort(items.begin(), items.end(), [](const vector<string>& a, const vector<string>& b) {
-        int idA = stoi(a[0]);
-        int idB = stoi(b[0]);
-        return idA < idB; // Sort based on item ID (words[0])
+        return a[1] < b[1];
     });
 
     for (const auto& item : items) {
-        cout << "Item ID: " << item[0] << "  Item Name: " << item[1] << "   Quantity: " << item[2] << "   Reg Date: " << item[3] << endl;
+        cout << "Item ID: " << setw(2) << item[0] << "      " << "Item Name:" << setw(10) << item[1] << "     " << "Quantity :" << setw(2) << item[2] << "      " << "Reg Date :" << item[3] << endl;
     }
 
     file.close();
 }
 
+// Function to check if the item id already existed in our file items.
 string finditemById(string& id){
    ifstream inputFile = openInputFile(item);
    string line;
@@ -83,6 +88,7 @@ string finditemById(string& id){
    return item_found;
 }
 
+// Function to check if the item name already existed in our file items
 string finditemByName(string& item_name){
    ifstream inputFile = openInputFile(item);
    string line;
@@ -100,12 +106,14 @@ string finditemByName(string& item_name){
    return item_found;
 }
 
+// Function to list items from our file throught readFromFile function.
 void listItems(){
    cout << "Loading ........" << endl;
    ifstream itemFile = openInputFile(item);
    readFromFile(itemFile);
 }
 
+// Function to check if the id enterered is a number or not.
 bool isValidNumber(const string& str) {
     for (char c : str) {
         if (!isdigit(c)) {
@@ -115,6 +123,7 @@ bool isValidNumber(const string& str) {
     return true;
 }
 
+// Function to check if the date entered is valid or not.
 bool isValidDate(const string& str) {
     if (str.length() != 10) {
         return false;
@@ -128,6 +137,7 @@ bool isValidDate(const string& str) {
     return true;
 }
 
+// Function for adding a new item 
 void addItem(string& item_id, string& item_name, string& item_quantity, string& item_registration_date){
    if(finditemByName(item_name) != "" ){
       cout<<"Item name already exist!"<<endl;
@@ -166,6 +176,7 @@ void addItem(string& item_id, string& item_name, string& item_quantity, string& 
 
 }
 
+// Function to help the user enter the command that he/she wants to perform.
 void chooseAction(){
    while (true){
       cout <<endl;
@@ -182,9 +193,9 @@ void chooseAction(){
       iss >> category;   
 
       if(category == "exit"){
-         cout << "-----------------------------------------------"<<endl;
-         cout << "*                BYE BYE !!!!                 *"<<endl;
-         cout << "-----------------------------------------------"<<endl;
+         cout << "------------------------------------------------------------------"<<endl;
+         cout << "*                              BYE BYE !!!!                      *"<<endl;
+         cout << "------------------------------------------------------------------"<<endl;
          break;
       }else if(category == "itemslist"){
          listItems();
@@ -213,10 +224,12 @@ void chooseAction(){
    }
 }
 
+// Our entry point main method.
 int main(){
    cout << "------------------------------------------------------------------"<<endl;
    cout << "*                                Welcome!                        *"<<endl;
-   cout << "*                       RCA stock management system              *"<<endl;
+   cout << "*                   RCA inventory management system              *"<<endl;
+   cout << "*                           By Esther Umuhoza                    *"<<endl;
    cout << "------------------------------------------------------------------"<<endl;
    cout << "If you need help, enter 'help' command"<<endl;
    cout << "Choose an action you want to perform"<<endl;
